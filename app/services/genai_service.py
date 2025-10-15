@@ -3,9 +3,6 @@ from app.configs.config import settings
 from google import genai
 
 
-
-
-
 MODEL = "gemini-2.0-flash-exp"
 
 
@@ -38,7 +35,6 @@ def generate_linkedin_post(topic: str, context_snippets: List[str], length: str 
 
 
     resp = client.models.generate_content(model=MODEL, contents=prompt)
-    
     text = None
     try:
         if hasattr(resp, 'content'):
@@ -52,5 +48,24 @@ def generate_linkedin_post(topic: str, context_snippets: List[str], length: str 
     except Exception:
         text = str(resp)
 
-
     return {"content": text, "summary": (context_snippets[0] if context_snippets else "")}
+
+
+def extract_text_from_response(resp) -> str:
+   
+    try:
+        if hasattr(resp, 'text'):
+            return str(resp.text)  
+        
+        if hasattr(resp, 'candidates') and resp.candidates:
+            candidate = resp.candidates[0]
+            if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                parts = candidate.content.parts
+                if parts and hasattr(parts[0], 'text'):
+                    return str(parts[0].text)  
+        
+        return str(resp) 
+        
+    except Exception as e:
+        print(f"Error extracting text: {e}")
+        return str(resp)

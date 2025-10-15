@@ -10,6 +10,12 @@ async def save_post(db: AsyncSession, topic: str, content: str, summary: str, so
     db.add(post)
     await db.commit()
     await db.refresh(post)
+
+    try:
+        post.source_urls = json.loads(post.source_urls)
+    except Exception:
+        post.source_urls = []
+
     return post
 
 
@@ -20,9 +26,21 @@ async def mark_post_as_posted(db: AsyncSession, post_id: int):
             post.posted = 1
             await db.commit()
             await db.refresh(post)
+
+            try:
+                post.source_urls = json.loads(post.source_urls)
+            except Exception:
+                post.source_urls = []
+
             return post
     return None
 
 
 async def get_post_by_id(db: AsyncSession, post_id: int):
-    return await db.get(Post, post_id)
+    post = await db.get(Post, post_id)
+    if post:
+        try:
+            post.source_urls = json.loads(post.source_urls)
+        except Exception:
+            post.source_urls = []
+    return post

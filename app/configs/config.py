@@ -13,6 +13,8 @@ class Settings:
     DB_NAME: str = os.getenv("DB_NAME")
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY")
     LINKEDIN_ACCESS_TOKEN = os.getenv("LINKEDIN_ACCESS_TOKEN")
+    LINKEDIN_CLIENT_ID = os.getenv("LINKEDIN_CLIENT_ID")
+    LINKEDIN_CLIENT_SECRET = ("LINKEDIN_CLIENT_SECRET")
     NEWS_RSS_BASE = os.getenv("NEWS_RSS_BASE", "https://news.google.com/rss/search?q=")
 
 

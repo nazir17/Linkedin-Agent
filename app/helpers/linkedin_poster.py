@@ -3,8 +3,6 @@ from app.configs.config import settings
 
 
 
-
-
 HEADERS = {
     'Authorization': f'Bearer {settings.LINKEDIN_ACCESS_TOKEN}',
     'Content-Type': 'application/json',
@@ -13,9 +11,7 @@ HEADERS = {
 
 
 
-
 def post_to_linkedin(content: str):
-
     me_resp = requests.get('https://api.linkedin.com/v2/me', headers=HEADERS, timeout=20)
     if me_resp.status_code != 200:
         return {'success': False, 'status_code': me_resp.status_code, 'detail': me_resp.text}

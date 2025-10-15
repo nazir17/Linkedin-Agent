@@ -13,7 +13,7 @@ class PostOut(BaseModel):
     topic: str
     content: str
     summary: Optional[str]
-    source_urls: Optional[List[str]]
+    source_urls: Optional[List[str]] = []
     posted: int
 
 
