@@ -38,7 +38,7 @@ def generate_linkedin_post(topic: str, context_snippets: List[str], length: str 
 
 
     resp = client.models.generate_content(model=MODEL, contents=prompt)
-    # SDK response shapes can vary. Try to extract text robustly.
+    
     text = None
     try:
         if hasattr(resp, 'content'):
