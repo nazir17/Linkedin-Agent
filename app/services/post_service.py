@@ -13,7 +13,7 @@ async def create_post_flow(topic: str, length: str = "short", auto_post: bool = 
     snippets = [ (n.get("title", "") + " - " + n.get("summary", "")) for n in news ]
 
 
-# 2) generate post via GenAI (sync) - run in executor to avoid blocking
+
     loop = asyncio.get_event_loop()
     gen_task = loop.run_in_executor(None, generate_linkedin_post, topic, snippets, length)
     gen_result = await gen_task
@@ -21,21 +21,21 @@ async def create_post_flow(topic: str, length: str = "short", auto_post: bool = 
     summary = gen_result.get("summary") or (snippets[0] if snippets else "")
 
 
-# 3) embeddings and upsert to Pinecone
+
     embeddings = await embed_texts([content])
     vecs_to_upsert = [ (f"post-{abs(hash(content))}", embeddings[0], {"topic": topic}) ]
-# upsert is sync
+
     await loop.run_in_executor(None, upsert_vectors, vecs_to_upsert)
 
 
-# 4) save to DB
+
     async with AsyncSessionLocal() as db:
         post = await save_post(db, topic, content, summary, [n.get("link") for n in news], posted=0)
-# 5) optionally auto-post to LinkedIn
+
         if auto_post:
-# call poster
+
             resp = await loop.run_in_executor(None, post_to_linkedin, content)
-# if success mark as posted
+
             if resp.get('success'):
                 await mark_post_as_posted(db, post.id)
                 post.posted = 1
